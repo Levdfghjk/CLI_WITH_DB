@@ -1,22 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"time"
+	"os"
 	database "users-cli/DataBase/db_SQL"
 	"users-cli/chat"
 
 	"github.com/jackc/pgx/v5"
 )
 
-type User struct {
-	ID         int
-	Name       string
-	Email      string
-	created_at time.Time
-}
-
 func main() {
+	scanner := bufio.NewScanner(os.Stdin)
 	ctx := context.Background()
 
 	conn, err := pgx.Connect(ctx, "postgres://postgres:1234@localhost:5432/postgres")
@@ -29,5 +24,5 @@ func main() {
 		panic(err)
 	}
 
-	chat.StartChat(ctx, *conn)
+	chat.StartChat(ctx, *conn, scanner)
 }

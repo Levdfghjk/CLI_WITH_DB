@@ -1,33 +1,23 @@
 package chat
 
-import "fmt"
+import (
+	"bufio"
+	"errors"
+	"fmt"
+)
 
-func CMDCreate() (string, string) {
+func CMDCreate(scanner *bufio.Scanner) (string, string, error) {
 	fmt.Println("Введитt ваше имя:")
+	scanner.Scan()
+	name := scanner.Text()
 
-	var name string
-	var email string
+	fmt.Println("Введитt ваше email:")
+	scanner.Scan()
+	email := scanner.Text()
 
-	n, err := fmt.Scan(&name)
-	if n == 0 && err != nil {
-		fmt.Println("Ошибка чтения команды!")
-		return "", ""
+	if email == "" || name == "" {
+		return "", "", errors.New("Имя или Email пустые!")
 	}
 
-	if name == "" {
-		fmt.Println("Ошибка! Имя не должно быть пустым!")
-	}
-
-	fmt.Println("Введитt ваш email:")
-	n, err1 := fmt.Scan(&email)
-	if n == 0 && err1 != nil {
-		fmt.Println("Ошибка чтения команды!")
-		return "", ""
-	}
-
-	if email == "" {
-		fmt.Println("Ошибка! Имя не должно быть пустым!")
-	}
-
-	return name, email
+	return name, email, nil
 }

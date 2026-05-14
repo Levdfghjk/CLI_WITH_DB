@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	database "users-cli/DataBase/db_SQL"
@@ -8,26 +9,36 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func StartChat(ctx context.Context, conn pgx.Conn) {
+func StartChat(ctx context.Context, conn pgx.Conn, scanner *bufio.Scanner) {
 	for {
-		var cmd string
-
+		fmt.Println("")
 		fmt.Println("Введите команду:")
-
-		n, err := fmt.Scan(&cmd)
-		if n == 0 && err != nil {
-			fmt.Println("Ошибка чтения команды!")
-			return
-		}
+		scanner.Scan()
+		cmd := scanner.Text()
 
 		if cmd == "create" {
-			name, email := CMDCreate()
+			name, email, err := CMDCreate(scanner)
+			if err != nil {
+				panic(err)
+			}
+
 			err2 := database.CreateUser(ctx, conn, name, email)
 			if err2 != nil {
 				panic(err2)
 			}
 		} else if cmd == "end" {
 			break
+		} else if cmd == "get info" {
+			id, err := CMDInfo()
+			if err != nil {
+				panic(err)
+			}
+
+			u, err := database.GetUserByID(ctx, conn, id)
+			if err != nil {
+				panic(err)
+			}
+			database.PrintUser(u)
 		} else {
 			fmt.Println("Неизвестная команда!")
 		}
