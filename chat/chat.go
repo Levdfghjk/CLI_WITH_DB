@@ -38,7 +38,12 @@ func StartChat(ctx context.Context, conn pgx.Conn, scanner *bufio.Scanner) {
 			if err != nil {
 				panic(err)
 			}
+
 			database.PrintUser(u)
+		} else if cmd == "last 10" {
+			if err := database.GetTenLastUsers(ctx, conn); err != nil {
+				panic(err)
+			}
 		} else {
 			fmt.Println("Неизвестная команда!")
 		}
