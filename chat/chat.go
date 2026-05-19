@@ -29,7 +29,7 @@ func StartChat(ctx context.Context, conn pgx.Conn, scanner *bufio.Scanner) {
 		} else if cmd == "end" {
 			break
 		} else if cmd == "get info" {
-			id, err := CMDInfo()
+			id, err := CMDInfo(scanner)
 			if err != nil {
 				panic(err)
 			}
@@ -40,10 +40,24 @@ func StartChat(ctx context.Context, conn pgx.Conn, scanner *bufio.Scanner) {
 			}
 
 			database.PrintUser(u)
+
+			continue
 		} else if cmd == "last 10" {
 			if err := database.GetTenLastUsers(ctx, conn); err != nil {
 				panic(err)
 			}
+		} else if cmd == "delete" {
+			id, err := CMDInfo(scanner)
+			if err != nil {
+				panic(err)
+			}
+
+			if err := database.DeleteUser(ctx, conn, id); err != nil {
+				panic(err)
+			}
+
+			fmt.Println("Пользовател был успешно удален!")
+			continue
 		} else {
 			fmt.Println("Неизвестная команда!")
 		}

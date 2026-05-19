@@ -1,20 +1,17 @@
 package chat
 
 import (
-	"errors"
+	"bufio"
 	"fmt"
+	"strconv"
 )
 
-func CMDInfo() (int, error) {
+func CMDInfo(scanner *bufio.Scanner) (int, error) {
 	fmt.Println("Введите ID:")
-
-	var ID int
-	n, err := fmt.Scan(&ID)
-	
-	if n == 0 && err != nil {
-		fmt.Println("Ошибка чтения команды!")
-		return 0, errors.New("Ошибка чтения команды")
+	scanner.Scan()
+	id, err := strconv.Atoi(scanner.Text())
+	if err != nil {
+		return 0, err
 	}
-
-	return ID, nil
+	return id, nil
 }
